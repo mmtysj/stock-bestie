@@ -21,7 +21,7 @@
     </script>
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f8f9fa; }
-        h1, h2, h3, .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        h1, h2, h3, .font-montserrat { font-family: 'Montserrat', 'Kanit', sans-serif; }
         .stock-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
         .stock-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
         .stock-logo { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: bold; color: white; flex-shrink: 0; }
@@ -33,8 +33,14 @@
         
         <div id="mainView">
             <header class="sticky top-0 z-50 bg-white shadow-sm">
-                <div class="flex justify-between items-center px-4 py-3">
+                <div class="px-4 pt-3">
                     <h1 class="text-xl font-bold font-montserrat">Stock Bestie!</h1>
+                    <p class="text-sm text-gray-600 mt-1">แนะนำหุ้นเด็ดสหรัฐ พร้อมสรุปและวิเคราะห์ เข้าใจง่าย เหมาะกับมือใหม่และนักลงทุนทั่วไป</p>
+                </div>
+                <div class="p-4">
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-800 p-3 rounded-r-lg">
+                        <p class="text-xs"><strong>Disclaimer:</strong> ไม่ใช่คำแนะนำการลงทุน เป็นเพียงการแชร์ข้อมูลหุ้นเพื่อการศึกษาและติดตามเท่านั้น ผู้ใช้งานควรศึกษาข้อมูลเพิ่มเติมและวางแผนอย่างรอบคอบ</p>
+                    </div>
                 </div>
             </header>
             <main id="cardView" class="p-4 grid grid-cols-2 gap-4"></main>
@@ -53,98 +59,111 @@
     </div>
 
 <script>
-    // --- NEW UPDATED STOCK DATA ---
     const fullStockData = {
         'HIMS': {
-            fullName: 'Hims & Hers Health Inc.', price: '~47.46 USD',
-            support: ['~45.50 USD (low เดือนก่อน)', '~43.00 USD (Fibonacci 0.382)', '~40.00 USD (แนวรับรายปี)'],
-            resistance: ['~49.50–50.00 USD (high เก่า)', '~52.50 USD (high มี.ค.-เม.ย.)', '~55.00 USD (จิตวิทยา)'],
-            analysis: 'ถ้าราคาไม่หลุด 45.50 จะถือเป็นโซนซื้อที่ดี การขึ้นเหนือแนวต้านแรกอาจเปิดโอกาสไปที่ 52+ ได้ แต่หากหลุด 43 อาจเบรคแนวโน้มกลางระยะ'
+            fullName: 'Hims & Hers Health Inc.', price: '47.60 USD',
+            support: ['46.00 USD', '44.00 USD', '40.00 USD'], resistance: ['49.80–50.20 USD', '52.50 USD', '55.00 USD'],
+            outlook: 'ธุรกิจสุขภาพดิจิทัลแบบครบวงจรเน้น telehealth และเวชภัณฑ์ ใช้ AI และ personalized care เพิ่มประสิทธิภาพ',
+            strength: 'ตอบโจทย์เทรนด์สุขภาพดิจิทัลและการแพทย์ระยะไกล ฐานลูกค้าขยายได้ดีในกลุ่มผู้บริโภคทั่วไป',
+            weakness: 'แข่งขันกับผู้ให้บริการรายใหญ่ในตลาดเดียวกัน การขยายบริการต้องรักษาคุณภาพและความน่าเชื่อถือ'
         },
         'OSCR': {
-            fullName: 'Oscar Health Inc.', price: '~16.62 USD',
-            support: ['~16.00 USD (โซนพักตัว)', '~15.50 USD (EMA 50 week)', '~14.80 USD (low ก่อน breakout)'],
-            resistance: ['~17.20 USD (high วันก่อน)', '~18.00 USD (แนวคาดการณ์)', '~19.00 USD (ถัดไป)'],
-            analysis: 'ขณะนี้ราคาย่อลงแตะแนวรับแรก หากเด้งจาก ~16 สามารถรอ Buy on dip ได้ แต่ถ้าร่วงหลุดแนว 15.50 ควรรอเก็บใหม่'
+            fullName: 'Oscar Health Inc.', price: '16.70 USD',
+            support: ['16.20 USD', '15.70 USD', '14.80 USD'], resistance: ['17.30 USD', '18.00 USD', '19.00 USD'],
+            outlook: 'ประกันสุขภาพดิจิทัลเน้นตลาด Millennials/Gen Z ขยายบริการ telemedicine',
+            strength: 'เน้นตลาดกลุ่มใหม่ที่ต้องการบริการดิจิทัล มีนวัตกรรมและแพลตฟอร์มที่ใช้งานง่าย',
+            weakness: 'กฎระเบียบประกันสุขภาพเข้มงวด ต้นทุนและความผันผวนค่ารักษาพยาบาลสูง'
         },
         'ZETA': {
-            fullName: 'Zeta Global', price: '~15.16 USD',
-            support: ['~14.50 USD (body แท่งก่อน)', '~14.00 USD (EMA 200 day)', '~13.20 USD (low ปลายเม.ย.)'],
-            resistance: ['~15.80 USD (high สัปดาห์ก่อน)', '~16.50 USD (แนวขายสะสม)', '~17.50 USD (high รอบเม.ย./มิ.ย.)'],
-            analysis: 'การวิ่งกลับจากแนวต่ำอาจแสดงถึง sentiment กลุ่มเทคฯ ดี การปิดเหนือ 15.80 จะทำให้ momentum ชัดเจน แต่หากกลับร่วงใต้ 14.50 แล้ว ยังควรเฝ้าระวัง'
+            fullName: 'Zeta Global', price: '15.20 USD',
+            support: ['14.60 USD', '14.00 USD', '13.20 USD'], resistance: ['15.90 USD', '16.50 USD', '17.50 USD'],
+            outlook: 'การตลาดดิจิทัลและ CDP พร้อม AI และ automation ลูกค้าองค์กรขยายตัวในกลุ่มเทคฯ และค้าปลีก',
+            strength: 'โซลูชันครบวงจรพร้อม AI เพิ่มประสิทธิภาพ ฐานลูกค้าองค์กรที่แข็งแรงและขยายต่อเนื่อง',
+            weakness: 'แข่งขันสูงในตลาด Martech กดดันด้านราคาจากคู่แข่งและรักษาลูกค้า'
         },
         'AMD': {
-            fullName: 'Advanced Micro Devices', price: '~138.52 USD',
-            support: ['134 USD', '133 USD', '131 USD'],
-            resistance: ['140 USD', '142 USD', '145 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> ตลาดชิปคอมพิวเตอร์และเซิร์ฟเวอร์ยังโตดี จากการเติบโตของ AI, Data Center และเกม ลูกค้ารายใหญ่ยังใช้ชิปต่อเนื่อง\n<strong>ปัญหา:</strong> แข่งขันหนักกับ Intel และ NVIDIA และความผันผวนของต้นทุนชิป'
+            fullName: 'Advanced Micro Devices', price: '138.50 USD',
+            support: ['134 USD', '133 USD', '131 USD'], resistance: ['140 USD', '142 USD', '145 USD'],
+            outlook: 'เติบโตจาก AI, Data Center, เกม, PC ลูกค้ารายใหญ่ใช้ชิปต่อเนื่อง',
+            strength: 'เทคโนโลยีชิประดับสูงและลูกค้าใหญ่ ได้ประโยชน์จากเทรนด์ AI และเกม',
+            weakness: 'แข่งขันกับ Intel และ NVIDIA ต้นทุนและราคาวัตถุดิบผันผวน'
         },
         'DLO': {
-            fullName: 'DLocal Limited', price: '~11.16 USD',
-            support: ['10.8 USD', '10.4 USD', '9.9 USD'],
-            resistance: ['11.4 USD', '11.8 USD', '12.2 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> Payment Gateway สำหรับตลาดเกิดใหม่มีโอกาสโตสูง ขยายลูกค้าในละตินอเมริกาและแอฟริกา\n<strong>ปัญหา:</strong> ความเสี่ยงทางกฎระเบียบของแต่ละประเทศ และการแข่งขันจาก fintech รายใหม่'
+            fullName: 'DLocal Limited', price: '11.20 USD',
+            support: ['10.8 USD', '10.4 USD', '9.9 USD'], resistance: ['11.4 USD', '11.8 USD', '12.2 USD'],
+            outlook: 'Payment Gateway ตลาดเกิดใหม่ ละตินอเมริกาและแอฟริกา ขยายพันธมิตร fintech',
+            strength: 'เติบโตสูงในตลาดเกิดใหม่ ระบบรองรับหลายประเทศ',
+            weakness: 'กฎระเบียบท้องถิ่นหลากหลาย แข่งขันรุนแรงจาก fintech รายใหม่'
         },
         'SOFI': {
-            fullName: 'SoFi Technologies', price: '~18.12 USD',
-            support: ['17.7 USD', '17.2 USD', '16.9 USD'],
-            resistance: ['18.4 USD', '18.8 USD', '19.2 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> แพลตฟอร์มการเงินครบวงจร กำลังขยายฐานลูกค้า millennials และ Gen Z\n<strong>ปัญหา:</strong> กฎระเบียบการเงินที่เข้มงวดขึ้น และความเสี่ยงด้านเครดิต'
+            fullName: 'SoFi Technologies', price: '18.15 USD',
+            support: ['17.7 USD', '17.2 USD', '16.9 USD'], resistance: ['18.5 USD', '18.8 USD', '19.2 USD'],
+            outlook: 'แพลตฟอร์มการเงินครบวงจร (สินเชื่อ, ลงทุน, บัตร) ลูกค้า millennials/Gen Z ขยายเร็ว',
+            strength: 'บริการครบวงจรสำหรับกลุ่มเป้าหมายหลัก มีนวัตกรรมผลิตภัณฑ์ใหม่',
+            weakness: 'กฎระเบียบการเงินเข้มงวด ความเสี่ยงเครดิตและการชำระคืน'
         },
         'LMND': {
-            fullName: 'Lemonade, Inc.', price: '~42.00 USD',
-            support: ['40 USD', '38.5 USD', '36 USD'],
-            resistance: ['44 USD', '46 USD', '48 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> ธุรกิจประกันดิจิทัลเติบโตจากเทรนด์ใช้งานออนไลน์ ขยายผลิตภัณฑ์ได้ดี\n<strong>ปัญหา:</strong> กำไรยังผันผวน ต้องใช้เวลาปรับโมเดลธุรกิจ แข่งขันสูง'
+            fullName: 'Lemonade, Inc.', price: '42.10 USD',
+            support: ['40 USD', '38.5 USD', '36 USD'], resistance: ['44 USD', '46 USD', '48 USD'],
+            outlook: 'ประกันดิจิทัลตามเทรนด์ออนไลน์ ขยายพันธมิตรและผลิตภัณฑ์',
+            strength: 'เติบโตในตลาดประกันออนไลน์ พันธมิตรธุรกิจแข็งแรง',
+            weakness: 'กำไรผันผวน แข่งขันกับประกันแบบเดิมและรายใหม่'
         },
         'EOSE': {
-            fullName: 'Eos Energy Enterprises', price: '~4.90 USD',
-            support: ['4.7 USD', '4.5 USD', '4.2 USD'],
-            resistance: ['5.1 USD', '5.4 USD', '5.8 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> เทคโนโลยีแบตเตอรี่พลังงานสะอาดเป็นที่ต้องการ รัฐบาลสนับสนุน\n<strong>ปัญหา:</strong> การแข่งขันสูงจากแบตเตอรี่ลิเทียม และต้นทุนการผลิตสูง'
+            fullName: 'Eos Energy Enterprises', price: '4.92 USD',
+            support: ['4.7 USD', '4.5 USD', '4.2 USD'], resistance: ['5.1 USD', '5.4 USD', '5.8 USD'],
+            outlook: 'แบตเตอรี่พลังงานสะอาด ได้รับการสนับสนุนจากรัฐบาล ตลาดเติบโตเร็ว',
+            strength: 'เทคโนโลยีแบตเตอรี่สะอาดล้ำหน้า การสนับสนุนภาครัฐช่วยเร่งตลาด',
+            weakness: 'แข่งขันกับเทคโนโลยีแบตเตอรี่ลิเทียม ต้นทุนการผลิตสูง'
         },
         'BBAI': {
-            fullName: 'BigBear.ai Holdings', price: '~7.56 USD',
-            support: ['7.3 USD', '7.0 USD', '6.5 USD'],
-            resistance: ['7.8 USD', '8.2 USD', '8.6 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> AI และ Big Data ใช้เพิ่มประสิทธิภาพธุรกิจหลากหลาย ลูกค้าองค์กรขยายตัว\n<strong>ปัญหา:</strong> การแข่งขันกับบริษัท AI ใหญ่ และการรักษาความปลอดภัยข้อมูล'
+            fullName: 'BigBear.ai Holdings', price: '7.55 USD',
+            support: ['7.3 USD', '7.0 USD', '6.5 USD'], resistance: ['7.8 USD', '8.2 USD', '8.6 USD'],
+            outlook: 'AI และ Big Data เพิ่มประสิทธิภาพธุรกิจ ขยายลูกค้าองค์กร',
+            strength: 'เทคโนโลยี AI ที่ใช้งานจริงได้หลากหลาย ลูกค้าองค์กรขยายตัว',
+            weakness: 'แข่งขันสูงกับบริษัท AI ใหญ่ ต้องรักษาความปลอดภัยข้อมูลและลูกค้า'
         },
         'RKLB': {
-            fullName: 'Rocket Lab USA', price: '~26.72 USD',
-            support: ['26 USD', '25 USD', '23.5 USD'],
-            resistance: ['28 USD', '30 USD', '32 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> ภาคขนส่งดาวเทียมเอกชนเติบโต กำลังขยายฐานลูกค้า\n<strong>ปัญหา:</strong> ความเสี่ยงด้านเทคนิคและโครงการล่าช้า และความผันผวนตลาดอวกาศ'
+            fullName: 'Rocket Lab USA', price: '26.70 USD',
+            support: ['26 USD', '25 USD', '23.5 USD'], resistance: ['28 USD', '30 USD', '32 USD'],
+            outlook: 'ขนส่งดาวเทียมเอกชนโตตามความต้องการ internet และ data ขยายโครงการอวกาศ',
+            strength: 'อยู่ในตลาดดาวเทียมเอกชนที่โตเร็ว มีโครงการและพันธมิตรชัดเจน',
+            weakness: 'ความเสี่ยงโครงการล่าช้าและเทคนิค ความผันผวนทางการเงินสูง'
         },
         'NBIS': {
-            fullName: 'Neobiotics Inc.', price: '~49.97 USD',
-            support: ['48 USD', '46 USD', '44 USD'],
-            resistance: ['52 USD', '54 USD', '56 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> กลุ่ม IPO ใหม่ที่ได้รับความสนใจ มีผลิตภัณฑ์น่าสนใจ\n<strong>ปัญหา:</strong> ผลประกอบการยังไม่มั่นคง และความผันผวนราคาจากการเก็งกำไร'
+            fullName: 'Neobiotics Inc.', price: '50.00 USD',
+            support: ['48 USD', '46 USD', '44 USD'], resistance: ['52 USD', '54 USD', '56 USD'],
+            outlook: 'IPO ใหม่ที่ได้รับความสนใจ มีผลิตภัณฑ์และบริการน่าสนใจ',
+            strength: 'ความสนใจจากนักลงทุนสูง โอกาสเติบโตในตลาด',
+            weakness: 'ผลประกอบการยังไม่มั่นคง ราคาผันผวนสูงจากเก็งกำไร'
         },
         'NVTS': {
-            fullName: 'Navitas Semiconductor', price: '~6.32 USD',
-            support: ['6.0 USD', '5.7 USD', '5.3 USD'],
-            resistance: ['6.6 USD', '7.0 USD', '7.5 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> ตลาดชิพกำลังไฟฟ้าโตจากรถไฟฟ้า มีเทคโนโลยีตอบโจทย์\n<strong>ปัญหา:</strong> การแข่งขันสูง และผลกระทบจากซัพพลายเชน'
+            fullName: 'Navitas Semiconductor', price: '6.30 USD',
+            support: ['6.0 USD', '5.7 USD', '5.3 USD'], resistance: ['6.6 USD', '7.0 USD', '7.5 USD'],
+            outlook: 'ชิพกำลังไฟฟ้าโตจากรถไฟฟ้าและอุตสาหกรรมใหม่ เทคโนโลยีประสิทธิภาพสูง',
+            strength: 'เทคโนโลยีตอบโจทย์อุตสาหกรรมอนาคต ตลาดกำลังเติบโตเร็ว',
+            weakness: 'แข่งขันสูง วัตถุดิบและซัพพลายเชนอาจกระทบต้นทุน'
         },
         'HOOD': {
-            fullName: 'Robinhood Markets', price: '~97.98 USD',
-            support: ['95 USD', '90 USD', '85 USD'],
-            resistance: ['100 USD', '105 USD', '110 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> แพลตฟอร์มเทรดหุ้นและ crypto ที่ได้รับความนิยมสูง พัฒนาสินค้าใหม่ต่อเนื่อง\n<strong>ปัญหา:</strong> กฎระเบียบที่อาจเข้มงวดขึ้น และความเสี่ยงจากการแข่งขัน'
+            fullName: 'Robinhood Markets', price: '97.95 USD',
+            support: ['95 USD', '90 USD', '85 USD'], resistance: ['100 USD', '105 USD', '110 USD'],
+            outlook: 'แพลตฟอร์มเทรดหุ้นและคริปโตที่ได้รับความนิยม พัฒนาสินค้าใหม่ เช่น stock token, AI assistant',
+            strength: 'ฐานลูกค้าใหญ่และกิจกรรมสูง พัฒนานวัตกรรมทางการเงิน',
+            weakness: 'กฎระเบียบที่เข้มงวดขึ้น แข่งขันสูงในแพลตฟอร์มการเงิน'
         },
         'RGTI': {
-            fullName: 'Rigetti Computing', price: '~13.08 USD',
-            support: ['12.5 USD', '11.8 USD', '11.0 USD'],
-            resistance: ['13.8 USD', '14.5 USD', '15.2 USD'],
-            analysis: '<strong>แนวโน้มธุรกิจ:</strong> Quantum computing เป็นเทคโนโลยีอนาคต โอกาสเติบโตสูง\n<strong>ปัญหา:</strong> ยังอยู่ในช่วงพัฒนา ต้นทุนสูง และความเสี่ยงเทคโนโลยีล้าสมัย'
+            fullName: 'Rigetti Computing', price: '13.10 USD',
+            support: ['12.5 USD', '11.8 USD', '11.0 USD'], resistance: ['13.8 USD', '14.5 USD', '15.2 USD'],
+            outlook: 'Quantum computing เทคโนโลยีอนาคตที่น่าสนใจ ลงทุนวิจัยพัฒนาอย่างต่อเนื่อง',
+            strength: 'มีศักยภาพสูงในเทคโนโลยี Quantum อยู่ในตลาดที่มีโอกาสโตมาก',
+            weakness: 'ต้นทุนวิจัยสูง ยังไม่มีกำไรแน่นอนและเสี่ยงเทคโนโลยีล้าสมัย'
         }
     };
 
     // --- HTML Generation Functions ---
     function createCardView(ticker, data) {
         return `
-        <div onclick="showDetailView('${ticker}')" class="stock-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+        <div onclick="showDetailView('${ticker}')" class="stock-card bg-white rounded-xl shadow-md hover:shadow-lg overflow-hidden border border-gray-200">
             <div class="p-4">
                 <div class="flex items-center mb-3">
                     <div class="stock-logo bg-gray-800 mr-3"><span class="stock-initial">${ticker.charAt(0)}</span></div>
@@ -159,7 +178,6 @@
     }
 
     function createDetailContent(ticker, data) {
-        const analysisHtml = data.analysis.replace(/\n/g, '<br>');
         return `
             <div class="flex items-center mb-4">
                 <div class="stock-logo bg-gray-800 mr-4 !w-16 !h-16"><span class="stock-initial !text-3xl">${ticker.charAt(0)}</span></div>
@@ -168,12 +186,25 @@
                     <p class="text-3xl font-semibold text-gray-900">${data.price}</p>
                 </div>
             </div>
-            <div class="bg-gray-50 p-4 rounded-lg space-y-4">
+            
+            <div class="space-y-6">
                 <div>
-                    <h3 class="font-semibold text-lg mb-2">บทวิเคราะห์</h3>
-                    <p class="text-gray-700 leading-relaxed">${analysisHtml}</p>
+                    <h3 class="font-semibold text-lg mb-2 border-b-2 border-gray-200 pb-1">ภาพรวมธุรกิจ</h3>
+                    <p class="text-gray-700 leading-relaxed">${data.outlook}</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <h3 class="font-semibold text-green-700 mb-2">✅ จุดแข็ง</h3>
+                        <p class="text-sm text-gray-600">${data.strength}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-red-700 mb-2">⚠️ จุดอ่อน</h3>
+                        <p class="text-sm text-gray-600">${data.weakness}</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                     <div>
                         <h3 class="font-semibold mb-2 text-green-700">แนวรับ (Support)</h3>
                         <ul class="list-disc list-inside text-green-600 space-y-1">
