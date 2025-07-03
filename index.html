@@ -3,994 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Bestie! (สต็อก เบสตี้!) - เพื่อนคู่คิดเรื่องหุ้นของคุณ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Stock Bestie! (Updated)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#1a1a1a',
-                        secondary: '#333333',
-                        accent: '#0066cc',
-                        positive: '#4CAF50',
-                        neutral: '#9E9E9E',
-                        negative: '#F44336',
-                    },
-                    fontFamily: {
+                    colors: { accent: '#0066cc', positive: '#4CAF50', negative: '#F44336' },
+                    fontFamily: { 
                         montserrat: ['Montserrat', 'sans-serif'],
-                        roboto: ['Roboto', 'sans-serif'],
+                        kanit: ['Kanit', 'sans-serif'] 
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Montserrat', sans-serif;
-        }
-        .tab-active {
-            border-bottom: 3px solid #0066cc;
-            color: #0066cc;
-            font-weight: 600;
-        }
-        .stock-card {
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .stock-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .badge {
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-weight: 500;
-            display: inline-block;
-            margin-right: 4px;
-            margin-bottom: 4px;
-        }
-        .badge-long-term {
-            background-color: #E3F2FD;
-            color: #1565C0;
-        }
-        .badge-growth {
-            background-color: #E8F5E9;
-            color: #2E7D32;
-        }
-        .badge-updated {
-            background-color: #FFF3E0;
-            color: #E65100;
-        }
-        .badge-tech {
-            background-color: #E8EAF6;
-            color: #3949AB;
-        }
-        .badge-finance {
-            background-color: #E0F2F1;
-            color: #00796B;
-        }
-        .badge-healthcare {
-            background-color: #F3E5F5;
-            color: #7B1FA2;
-        }
-        .badge-etf {
-            background-color: #FFEBEE;
-            color: #C62828;
-        }
-        .sentiment-positive {
-            background-color: rgba(76, 175, 80, 0.1);
-            border-left: 3px solid #4CAF50;
-        }
-        .sentiment-neutral {
-            background-color: rgba(158, 158, 158, 0.1);
-            border-left: 3px solid #9E9E9E;
-        }
-        .sentiment-negative {
-            background-color: rgba(244, 67, 54, 0.1);
-            border-left: 3px solid #F44336;
-        }
-        .bottom-nav {
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-        }
-        .stock-logo {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-weight: bold;
-            color: white;
-        }
-        .stock-initial {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        .levels-container {
-            font-size: 0.65rem;
-            border-radius: 6px;
-            background-color: #f9f9f9;
-            margin-top: 6px;
-            padding: 4px 6px;
-        }
-        .resistance-level {
-            color: #F44336;
-        }
-        .support-level {
-            color: #4CAF50;
-        }
-        .level-label {
-            color: #757575;
-            font-size: 0.6rem;
-        }
-        .level-date {
-            color: #9E9E9E;
-            font-size: 0.55rem;
-            text-align: right;
-        }
-        .disclaimer {
-            background-color: #FFF8E1;
-            border-left: 3px solid #FFC107;
-            font-size: 0.75rem;
-            line-height: 1.3;
-        }
+        body { font-family: 'Kanit', sans-serif; background-color: #f8f9fa; }
+        h1, h2, h3, .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .stock-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+        .stock-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .stock-logo { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-weight: bold; color: white; flex-shrink: 0; }
+        .stock-initial { font-size: 20px; font-weight: 600; }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div id="app" class="max-w-md mx-auto bg-white min-h-screen relative pb-16">
-        <!-- Header -->
-        <header class="sticky top-0 z-50 bg-white shadow-sm">
-            <div class="flex justify-between items-center px-4 py-3">
-                <div class="flex items-center">
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto bg-white min-h-screen">
+        
+        <div id="mainView">
+            <header class="sticky top-0 z-50 bg-white shadow-sm">
+                <div class="flex justify-between items-center px-4 py-3">
                     <h1 class="text-xl font-bold font-montserrat">Stock Bestie!</h1>
-                    <span class="ml-1 text-sm text-gray-500">สต็อก เบสตี้!</span>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <button id="searchBtn" class="p-2 rounded-full hover:bg-gray-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                    <button id="filterBtn" class="p-2 rounded-full hover:bg-gray-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                        </svg>
-                    </button>
+            </header>
+            <main id="cardView" class="p-4 grid grid-cols-2 gap-4"></main>
+        </div>
+
+        <div id="detailView" class="hidden">
+            <header class="sticky top-0 z-50 bg-white shadow-sm flex items-center p-3">
+                <button id="backBtn" class="p-2 rounded-full hover:bg-gray-100 mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                </button>
+                <h1 id="detail-header-ticker" class="text-xl font-bold font-montserrat"></h1>
+            </header>
+            <main id="stock-details-content" class="p-4"></main>
+        </div>
+
+    </div>
+
+<script>
+    // --- NEW UPDATED STOCK DATA ---
+    const fullStockData = {
+        'HIMS': {
+            fullName: 'Hims & Hers Health Inc.', price: '~47.46 USD',
+            support: ['~45.50 USD (low เดือนก่อน)', '~43.00 USD (Fibonacci 0.382)', '~40.00 USD (แนวรับรายปี)'],
+            resistance: ['~49.50–50.00 USD (high เก่า)', '~52.50 USD (high มี.ค.-เม.ย.)', '~55.00 USD (จิตวิทยา)'],
+            analysis: 'ถ้าราคาไม่หลุด 45.50 จะถือเป็นโซนซื้อที่ดี การขึ้นเหนือแนวต้านแรกอาจเปิดโอกาสไปที่ 52+ ได้ แต่หากหลุด 43 อาจเบรคแนวโน้มกลางระยะ'
+        },
+        'OSCR': {
+            fullName: 'Oscar Health Inc.', price: '~16.62 USD',
+            support: ['~16.00 USD (โซนพักตัว)', '~15.50 USD (EMA 50 week)', '~14.80 USD (low ก่อน breakout)'],
+            resistance: ['~17.20 USD (high วันก่อน)', '~18.00 USD (แนวคาดการณ์)', '~19.00 USD (ถัดไป)'],
+            analysis: 'ขณะนี้ราคาย่อลงแตะแนวรับแรก หากเด้งจาก ~16 สามารถรอ Buy on dip ได้ แต่ถ้าร่วงหลุดแนว 15.50 ควรรอเก็บใหม่'
+        },
+        'ZETA': {
+            fullName: 'Zeta Global', price: '~15.16 USD',
+            support: ['~14.50 USD (body แท่งก่อน)', '~14.00 USD (EMA 200 day)', '~13.20 USD (low ปลายเม.ย.)'],
+            resistance: ['~15.80 USD (high สัปดาห์ก่อน)', '~16.50 USD (แนวขายสะสม)', '~17.50 USD (high รอบเม.ย./มิ.ย.)'],
+            analysis: 'การวิ่งกลับจากแนวต่ำอาจแสดงถึง sentiment กลุ่มเทคฯ ดี การปิดเหนือ 15.80 จะทำให้ momentum ชัดเจน แต่หากกลับร่วงใต้ 14.50 แล้ว ยังควรเฝ้าระวัง'
+        },
+        'AMD': {
+            fullName: 'Advanced Micro Devices', price: '~138.52 USD',
+            support: ['134 USD', '133 USD', '131 USD'],
+            resistance: ['140 USD', '142 USD', '145 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> ตลาดชิปคอมพิวเตอร์และเซิร์ฟเวอร์ยังโตดี จากการเติบโตของ AI, Data Center และเกม ลูกค้ารายใหญ่ยังใช้ชิปต่อเนื่อง\n<strong>ปัญหา:</strong> แข่งขันหนักกับ Intel และ NVIDIA และความผันผวนของต้นทุนชิป'
+        },
+        'DLO': {
+            fullName: 'DLocal Limited', price: '~11.16 USD',
+            support: ['10.8 USD', '10.4 USD', '9.9 USD'],
+            resistance: ['11.4 USD', '11.8 USD', '12.2 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> Payment Gateway สำหรับตลาดเกิดใหม่มีโอกาสโตสูง ขยายลูกค้าในละตินอเมริกาและแอฟริกา\n<strong>ปัญหา:</strong> ความเสี่ยงทางกฎระเบียบของแต่ละประเทศ และการแข่งขันจาก fintech รายใหม่'
+        },
+        'SOFI': {
+            fullName: 'SoFi Technologies', price: '~18.12 USD',
+            support: ['17.7 USD', '17.2 USD', '16.9 USD'],
+            resistance: ['18.4 USD', '18.8 USD', '19.2 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> แพลตฟอร์มการเงินครบวงจร กำลังขยายฐานลูกค้า millennials และ Gen Z\n<strong>ปัญหา:</strong> กฎระเบียบการเงินที่เข้มงวดขึ้น และความเสี่ยงด้านเครดิต'
+        },
+        'LMND': {
+            fullName: 'Lemonade, Inc.', price: '~42.00 USD',
+            support: ['40 USD', '38.5 USD', '36 USD'],
+            resistance: ['44 USD', '46 USD', '48 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> ธุรกิจประกันดิจิทัลเติบโตจากเทรนด์ใช้งานออนไลน์ ขยายผลิตภัณฑ์ได้ดี\n<strong>ปัญหา:</strong> กำไรยังผันผวน ต้องใช้เวลาปรับโมเดลธุรกิจ แข่งขันสูง'
+        },
+        'EOSE': {
+            fullName: 'Eos Energy Enterprises', price: '~4.90 USD',
+            support: ['4.7 USD', '4.5 USD', '4.2 USD'],
+            resistance: ['5.1 USD', '5.4 USD', '5.8 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> เทคโนโลยีแบตเตอรี่พลังงานสะอาดเป็นที่ต้องการ รัฐบาลสนับสนุน\n<strong>ปัญหา:</strong> การแข่งขันสูงจากแบตเตอรี่ลิเทียม และต้นทุนการผลิตสูง'
+        },
+        'BBAI': {
+            fullName: 'BigBear.ai Holdings', price: '~7.56 USD',
+            support: ['7.3 USD', '7.0 USD', '6.5 USD'],
+            resistance: ['7.8 USD', '8.2 USD', '8.6 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> AI และ Big Data ใช้เพิ่มประสิทธิภาพธุรกิจหลากหลาย ลูกค้าองค์กรขยายตัว\n<strong>ปัญหา:</strong> การแข่งขันกับบริษัท AI ใหญ่ และการรักษาความปลอดภัยข้อมูล'
+        },
+        'RKLB': {
+            fullName: 'Rocket Lab USA', price: '~26.72 USD',
+            support: ['26 USD', '25 USD', '23.5 USD'],
+            resistance: ['28 USD', '30 USD', '32 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> ภาคขนส่งดาวเทียมเอกชนเติบโต กำลังขยายฐานลูกค้า\n<strong>ปัญหา:</strong> ความเสี่ยงด้านเทคนิคและโครงการล่าช้า และความผันผวนตลาดอวกาศ'
+        },
+        'NBIS': {
+            fullName: 'Neobiotics Inc.', price: '~49.97 USD',
+            support: ['48 USD', '46 USD', '44 USD'],
+            resistance: ['52 USD', '54 USD', '56 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> กลุ่ม IPO ใหม่ที่ได้รับความสนใจ มีผลิตภัณฑ์น่าสนใจ\n<strong>ปัญหา:</strong> ผลประกอบการยังไม่มั่นคง และความผันผวนราคาจากการเก็งกำไร'
+        },
+        'NVTS': {
+            fullName: 'Navitas Semiconductor', price: '~6.32 USD',
+            support: ['6.0 USD', '5.7 USD', '5.3 USD'],
+            resistance: ['6.6 USD', '7.0 USD', '7.5 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> ตลาดชิพกำลังไฟฟ้าโตจากรถไฟฟ้า มีเทคโนโลยีตอบโจทย์\n<strong>ปัญหา:</strong> การแข่งขันสูง และผลกระทบจากซัพพลายเชน'
+        },
+        'HOOD': {
+            fullName: 'Robinhood Markets', price: '~97.98 USD',
+            support: ['95 USD', '90 USD', '85 USD'],
+            resistance: ['100 USD', '105 USD', '110 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> แพลตฟอร์มเทรดหุ้นและ crypto ที่ได้รับความนิยมสูง พัฒนาสินค้าใหม่ต่อเนื่อง\n<strong>ปัญหา:</strong> กฎระเบียบที่อาจเข้มงวดขึ้น และความเสี่ยงจากการแข่งขัน'
+        },
+        'RGTI': {
+            fullName: 'Rigetti Computing', price: '~13.08 USD',
+            support: ['12.5 USD', '11.8 USD', '11.0 USD'],
+            resistance: ['13.8 USD', '14.5 USD', '15.2 USD'],
+            analysis: '<strong>แนวโน้มธุรกิจ:</strong> Quantum computing เป็นเทคโนโลยีอนาคต โอกาสเติบโตสูง\n<strong>ปัญหา:</strong> ยังอยู่ในช่วงพัฒนา ต้นทุนสูง และความเสี่ยงเทคโนโลยีล้าสมัย'
+        }
+    };
+
+    // --- HTML Generation Functions ---
+    function createCardView(ticker, data) {
+        return `
+        <div onclick="showDetailView('${ticker}')" class="stock-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+            <div class="p-4">
+                <div class="flex items-center mb-3">
+                    <div class="stock-logo bg-gray-800 mr-3"><span class="stock-initial">${ticker.charAt(0)}</span></div>
+                    <div>
+                        <h3 class="font-semibold text-lg font-montserrat">${ticker}</h3>
+                        <p class="text-xs text-gray-500 truncate w-28">${data.fullName}</p>
+                    </div>
+                </div>
+                <p class="text-xl font-semibold text-gray-800 text-right">${data.price}</p>
+            </div>
+        </div>`;
+    }
+
+    function createDetailContent(ticker, data) {
+        const analysisHtml = data.analysis.replace(/\n/g, '<br>');
+        return `
+            <div class="flex items-center mb-4">
+                <div class="stock-logo bg-gray-800 mr-4 !w-16 !h-16"><span class="stock-initial !text-3xl">${ticker.charAt(0)}</span></div>
+                <div>
+                    <h2 class="text-2xl font-bold font-montserrat">${data.fullName}</h2>
+                    <p class="text-3xl font-semibold text-gray-900">${data.price}</p>
                 </div>
             </div>
-            
-            <!-- Disclaimer -->
-            <div class="disclaimer px-4 py-2 text-gray-700">
-                <p class="flex items-start">
-                    <span class="text-amber-500 mr-1">📌</span>
-                    <span><strong>ข้อจำกัดความรับผิดชอบ (Disclaimer):</strong> ไม่ใช่คำแนะนำการลงทุน เป็นเพียงการแชร์ข้อมูลหุ้นเพื่อการศึกษาและติดตามเท่านั้น ผู้ใช้งานควรศึกษาข้อมูลเพิ่มเติมและวางแผนอย่างรอบคอบ</span>
-                </p>
-            </div>
-            
-            <!-- Search Panel (hidden by default) -->
-            <div id="searchPanel" class="hidden px-4 py-3 bg-white border-t border-gray-100">
-                <div class="relative">
-                    <input type="text" placeholder="ค้นหาหุ้น..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent">
-                    <button class="absolute right-3 top-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+            <div class="bg-gray-50 p-4 rounded-lg space-y-4">
+                <div>
+                    <h3 class="font-semibold text-lg mb-2">บทวิเคราะห์</h3>
+                    <p class="text-gray-700 leading-relaxed">${analysisHtml}</p>
                 </div>
-            </div>
-            
-            <!-- Filter Panel (hidden by default) -->
-            <div id="filterPanel" class="hidden px-4 py-3 bg-white border-t border-gray-100">
-                <h3 class="font-medium mb-2">กรองตาม</h3>
-                <div class="flex flex-wrap gap-2 mb-2">
-                    <button class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">ทั้งหมด</button>
-                    <button class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">เทคโนโลยี</button>
-                    <button class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">การเงิน</button>
-                    <button class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">สุขภาพ</button>
-                    <button class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">พลังงาน</button>
-                </div>
-                <h3 class="font-medium mb-2">Market Cap</h3>
-                <div class="flex flex-wrap gap-2">
-                    <button class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">Large Cap</button>
-                    <button class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">Mid Cap</button>
-                    <button class="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-gray-200">Small Cap</button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="pb-16">
-            <!-- View Selector -->
-            <div class="flex justify-between items-center px-4 py-3">
-                <h2 class="text-lg font-semibold font-montserrat">หุ้นแนะนำ</h2>
-                <div class="flex space-x-2">
-                    <button id="cardViewBtn" class="p-1.5 bg-accent text-white rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                        </svg>
-                    </button>
-                    <button id="listViewBtn" class="p-1.5 bg-gray-200 text-gray-600 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Card View (default) -->
-            <div id="cardView" class="px-4 grid grid-cols-2 gap-3">
-                <!-- HIMS -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('HIMS')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-purple-600 mr-2">
-                                <span class="stock-initial">H</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">HIMS</h3>
-                                <p class="text-xs text-gray-500">Hims & Hers Health</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-growth">High Growth</span>
-                            <span class="badge badge-healthcare">Healthcare</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+1.8%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$16.50</span> | <span>$17.80</span> | <span>$19.25</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$14.20</span> | <span>$13.40</span> | <span>$12.75</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="font-semibold mb-2 text-green-700">แนวรับ (Support)</h3>
+                        <ul class="list-disc list-inside text-green-600 space-y-1">
+                            ${data.support.map(s => `<li>${s}</li>`).join('')}
+                        </ul>
                     </div>
-                </div>
-
-                <!-- OSCR -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('OSCR')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-blue-500 mr-2">
-                                <span class="stock-initial">O</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">OSCR</h3>
-                                <p class="text-xs text-gray-500">Oscar Health</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-healthcare">Healthcare</span>
-                            <span class="badge badge-updated">Updated</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+2.3%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$18.75</span> | <span>$20.30</span> | <span>$22.50</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$16.40</span> | <span>$15.20</span> | <span>$13.80</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ZETA -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('ZETA')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-green-600 mr-2">
-                                <span class="stock-initial">Z</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">ZETA</h3>
-                                <p class="text-xs text-gray-500">Zeta Global Holdings</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-tech">Technology</span>
-                            <span class="badge badge-growth">High Growth</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+3.1%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$11.25</span> | <span>$12.40</span> | <span>$13.80</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$9.60</span> | <span>$8.75</span> | <span>$7.90</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AMD -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('AMD')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-red-600 mr-2">
-                                <span class="stock-initial">A</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">AMD</h3>
-                                <p class="text-xs text-gray-500">Advanced Micro Devices</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-tech">Technology</span>
-                            <span class="badge badge-long-term">Long-term</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+2.7%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$178.50</span> | <span>$185.20</span> | <span>$192.75</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$165.30</span> | <span>$158.40</span> | <span>$150.80</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DLO -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('DLO')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-blue-700 mr-2">
-                                <span class="stock-initial">D</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">DLO</h3>
-                                <p class="text-xs text-gray-500">DLocal Limited</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-finance">Finance</span>
-                            <span class="badge badge-growth">High Growth</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-negative">-0.8%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$15.80</span> | <span>$17.25</span> | <span>$19.40</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$13.60</span> | <span>$12.20</span> | <span>$10.90</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SOFI -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('SOFI')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-indigo-600 mr-2">
-                                <span class="stock-initial">S</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">SOFI</h3>
-                                <p class="text-xs text-gray-500">SoFi Technologies</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-finance">Finance</span>
-                            <span class="badge badge-updated">Updated</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+1.5%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$8.75</span> | <span>$9.40</span> | <span>$10.25</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$7.60</span> | <span>$6.90</span> | <span>$6.20</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LMND -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('LMND')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-yellow-500 mr-2">
-                                <span class="stock-initial">L</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">LMND</h3>
-                                <p class="text-xs text-gray-500">Lemonade, Inc.</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-finance">Finance</span>
-                            <span class="badge badge-growth">High Growth</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+3.4%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$19.80</span> | <span>$21.50</span> | <span>$24.20</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$17.30</span> | <span>$15.80</span> | <span>$14.20</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- EOSE -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('EOSE')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-green-500 mr-2">
-                                <span class="stock-initial">E</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">EOSE</h3>
-                                <p class="text-xs text-gray-500">Eos Energy Enterprises</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-growth">High Growth</span>
-                            <span class="badge badge-updated">Updated</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-negative">-2.1%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$3.25</span> | <span>$3.80</span> | <span>$4.50</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$2.40</span> | <span>$1.90</span> | <span>$1.50</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- BBAI -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('BBAI')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-purple-500 mr-2">
-                                <span class="stock-initial">B</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">BBAI</h3>
-                                <p class="text-xs text-gray-500">BigBear.ai Holdings</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-tech">Technology</span>
-                            <span class="badge badge-growth">High Growth</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+5.2%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$2.80</span> | <span>$3.40</span> | <span>$4.20</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$2.10</span> | <span>$1.70</span> | <span>$1.30</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RKLB -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('RKLB')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-blue-800 mr-2">
-                                <span class="stock-initial">R</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">RKLB</h3>
-                                <p class="text-xs text-gray-500">Rocket Lab USA</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-tech">Technology</span>
-                            <span class="badge badge-long-term">Long-term</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+1.9%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$5.80</span> | <span>$6.50</span> | <span>$7.25</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$4.90</span> | <span>$4.20</span> | <span>$3.60</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- NBIS -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('NBIS')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-teal-600 mr-2">
-                                <span class="stock-initial">N</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">NBIS</h3>
-                                <p class="text-xs text-gray-500">Neobiotics Inc.</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-healthcare">Healthcare</span>
-                            <span class="badge badge-growth">High Growth</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+2.5%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$9.40</span> | <span>$10.25</span> | <span>$11.80</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$8.20</span> | <span>$7.50</span> | <span>$6.80</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- NVTS -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('NVTS')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-orange-600 mr-2">
-                                <span class="stock-initial">N</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">NVTS</h3>
-                                <p class="text-xs text-gray-500">Navitas Semiconductor</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-tech">Technology</span>
-                            <span class="badge badge-long-term">Long-term</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-negative">-0.7%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$8.90</span> | <span>$9.75</span> | <span>$10.80</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$7.60</span> | <span>$6.80</span> | <span>$5.90</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HOOD -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('HOOD')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-green-700 mr-2">
-                                <span class="stock-initial">H</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">HOOD</h3>
-                                <p class="text-xs text-gray-500">Robinhood Markets</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-finance">Finance</span>
-                            <span class="badge badge-updated">Updated</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+1.3%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$12.80</span> | <span>$14.20</span> | <span>$15.90</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$10.90</span> | <span>$9.60</span> | <span>$8.40</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RGTI -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('RGTI')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-blue-600 mr-2">
-                                <span class="stock-initial">R</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">RGTI</h3>
-                                <p class="text-xs text-gray-500">Rigetti Computing</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-tech">Technology</span>
-                            <span class="badge badge-growth">High Growth</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+4.1%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$2.40</span> | <span>$2.90</span> | <span>$3.50</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$1.80</span> | <span>$1.40</span> | <span>$1.10</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SPY -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('SPY')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-gray-700 mr-2">
-                                <span class="stock-initial">S</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">SPY</h3>
-                                <p class="text-xs text-gray-500">SPDR S&P 500 ETF</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-etf">ETF</span>
-                            <span class="badge badge-long-term">Long-term</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+0.5%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$465.80</span> | <span>$475.20</span> | <span>$485.50</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$450.30</span> | <span>$440.80</span> | <span>$430.20</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MSTY -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('MSTY')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-pink-600 mr-2">
-                                <span class="stock-initial">M</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">MSTY</h3>
-                                <p class="text-xs text-gray-500">Misty Robotics</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-tech">Technology</span>
-                            <span class="badge badge-growth">High Growth</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-positive">+2.9%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$7.80</span> | <span>$8.50</span> | <span>$9.40</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$6.90</span> | <span>$6.20</span> | <span>$5.50</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CONY -->
-                <div class="stock-card bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100" onclick="showStockDetail('CONY')">
-                    <div class="p-3">
-                        <div class="flex items-center mb-2">
-                            <div class="stock-logo bg-cyan-600 mr-2">
-                                <span class="stock-initial">C</span>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold">CONY</h3>
-                                <p class="text-xs text-gray-500">Coinify Group</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap mb-2">
-                            <span class="badge badge-finance">Finance</span>
-                            <span class="badge badge-updated">Updated</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm font-medium text-negative">-1.2%</span>
-                            <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="levels-container">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="level-label">แนวต้าน:</span>
-                                <div class="resistance-level">
-                                    <span>$5.40</span> | <span>$6.20</span> | <span>$7.10</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="level-label">แนวรับ:</span>
-                                <div class="support-level">
-                                    <span>$4.60</span> | <span>$3.90</span> | <span>$3.20</span>
-                                </div>
-                            </div>
-                            <div class="level-date">อัพเดท: 15 มิ.ย. 2023</div>
-                        </div>
+                    <div>
+                        <h3 class="font-semibold mb-2 text-red-700">แนวต้าน (Resistance)</h3>
+                        <ul class="list-disc list-inside text-red-600 space-y-1">
+                             ${data.resistance.map(r => `<li>${r}</li>`).join('')}
+                        </ul>
                     </div>
                 </div>
             </div>
+        `;
+    }
 
-            <!-- List View (hidden by default) -->
-            <div id="listView" class="hidden px-4 space-y-2">
-                <!-- HIMS -->
-                <div class="bg-white rounded-lg shadow-sm p-3 flex items-center justify-between border border-gray-100" onclick="showStockDetail('HIMS')">
-                    <div class="flex items-center">
-                        <div class="stock-logo bg-purple-600 mr-3">
-                            <span class="stock-initial">H</span>
-                        </div>
-                        <div>
-                            <div class="flex items-center">
-                                <h3 class="font-semibold">HIMS</h3>
-                                <span class="ml-2 text-xs text-gray-500">Hims & Hers Health</span>
-                            </div>
-                            <div class="flex flex-wrap mt-1">
-                                <span class="badge badge-growth">High Growth</span>
-                                <span class="badge badge-healthcare">Healthcare</span>
-                            </div>
-                            <div class="levels-container mt-1 w-full">
-                                <div class="flex justify-between items-center text-xs">
-                                    <span class="resistance-level">R: $16.50 | $17.80 | $19.25</span>
-                                    <span class="support-level ml-2">S: $14.20 | $13.40 | $12.75</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center">
-                        <span class="text-sm font-medium text-positive mr-3">+1.8%</span>
-                        <button class="favorite-btn p-1.5 text-gray-400 hover:text-yellow-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+    // --- View Management Functions ---
+    const mainView = document.getElementById('mainView');
+    const detailView = document.getElementById('detailView');
+    const detailHeaderTicker = document.getElementById('detail-header-ticker');
+    const detailContent = document.getElementById('stock-details-content');
 
-                <!-- OSCR -->
-                <div class="bg-white rounded-lg shadow-sm p-3 flex items-center justify-between border border-gray-100" onclick="showStockDetail('OSCR')">
-                    <div class="flex items-center">
-                        <div class="stock-logo bg-blue-500 mr-3">
-                            <span class="stock-initial">O</span>
-                        </div>
-                        <div>
-                            <div class="flex items-center">
-                                <h3 class="font-semibold">OSCR</h3>
-                                <span class="ml-2 text-xs text-gray-500">Oscar Health</span>
-                            </div>
-                            <div class="flex flex-wrap mt-1">
-                                <span class="badge badge-healthcare">Healthcare</span>
-                                <span class="badge badge-updated">Updated</span>
-                            </div>
-                            <div class="levels-container mt-1 w-full">
-                                <div class="flex justify-between items-center text-xs">
-                                    <span class="resistance-```
+    function showDetailView(ticker) {
+        const data = fullStockData[ticker];
+        if (data) {
+            detailHeaderTicker.textContent = ticker;
+            detailContent.innerHTML = createDetailContent(ticker, data);
+            mainView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+    }
 
+    function showMainView() {
+        detailView.classList.add('hidden');
+        mainView.classList.remove('hidden');
+    }
+
+    // --- Initial Load ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const cardViewContainer = document.getElementById('cardView');
+        const backBtn = document.getElementById('backBtn');
+        backBtn.addEventListener('click', showMainView);
+
+        // Render stock cards from the static data object
+        cardViewContainer.innerHTML = '';
+        for (const ticker in fullStockData) {
+            cardViewContainer.innerHTML += createCardView(ticker, fullStockData[ticker]);
+        }
+    });
+</script>
+</body>
+</html>
